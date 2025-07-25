@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Form Validation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      background-color: #fff;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input.error,
+    textarea.error {
+      border: 2px solid red;
+    }
+
+    .error-msg {
+      color: red;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .success-msg {
+      color: green;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .form-actions {
+      text-align: center;
+    }
+
+    .form-actions button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      border: none;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .form-actions button:hover {
+      background-color: #0056b3;
+    }
+
+    .checkbox-group, .radio-group {
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Contact Form</h2>
+    <form id="contactForm">
+      <div class="form-group">
+        <label for="name">Name *</label>
+        <input type="text" id="name" />
+        <div class="error-msg" id="nameError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" />
+        <div class="error-msg" id="emailError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="subject">Subject *</label>
+        <input type="text" id="subject" />
+        <div class="error-msg" id="subjectError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message *</label>
+        <textarea id="message" rows="4"></textarea>
+        <div class="error-msg" id="messageError"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Gender *</label>
+        <div class="radio-group">
+          <label><input type="radio" name="gender" value="male" /> Male</label>
+          <label><input type="radio" name="gender" value="female" /> Female</label>
+        </div>
+        <div class="error-msg" id="genderError"></div>
+      </div>
+
+      <div class="form-group">
+        <label>Interests</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="interests" value="Web" /> Web Development</label><br/>
+          <label><input type="checkbox" name="interests" value="AI" /> AI & ML</label><br/>
+          <label><input type="checkbox" name="interests" value="UI" /> UI/UX Design</label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Submit</button>
+      </div>
+
+      <div class="success-msg" id="successMsg"></div>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("contactForm");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); // Prevent page reload
+
+      // Clear previous messages
+      let isValid = true;
+      document.getElementById("successMsg").innerText = "";
+
+      // Helper function to validate and highlight
+      function validateField(id, message) {
+        const field = document.getElementById(id);
+        const errorDiv = document.getElementById(id + "Error");
+
+        if (!field.value.trim()) {
+          field.classList.add("error");
+          errorDiv.innerText = message;
+          isValid = false;
+        } else {
+          field.classList.remove("error");
+          errorDiv.innerText = "";
+        }
+      }
+
+      // Validate name, email, subject, message
+      validateField("name", "Name is required.");
+      validateField("subject", "Subject is required.");
+      validateField("message", "Message is required.");
+
+      // Validate email
+      const email = document.getElementById("email");
+      const emailError = document.getElementById("emailError");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!email.value.trim()) {
+        email.classList.add("error");
+        emailError.innerText = "Email is required.";
+        isValid = false;
+      } else if (!emailRegex.test(email.value.trim())) {
+        email.classList.add("error");
+        emailError.innerText = "Enter a valid email address.";
+        isValid = false;
+      } else {
+        email.classList.remove("error");
+        emailError.innerText = "";
+      }
+
+      // Validate gender selection
+      const genderSelected = document.querySelector('input[name="gender"]:checked');
+      const genderError = document.getElementById("genderError");
+      if (!genderSelected) {
+        genderError.innerText = "Please select your gender.";
+        isValid = false;
+      } else {
+        genderError.innerText = "";
+      }
+
+      // If all valid, show success
+      if (isValid) {
+        document.getElementById("successMsg").innerText = "Form submitted successfully!";
+        form.reset(); // Optional: clear form
+      }
+    });
+  </script>
+</body>
+</html>
